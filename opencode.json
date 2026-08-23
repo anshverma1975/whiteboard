@@ -1,0 +1,37 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "model": "conduit/qwen3-coder",
+  "provider": {
+    "conduit": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "Conduit",
+      "options": {
+        "baseURL": "https://conduit.ozdoev.net/v1",
+        "apiKey": "{env:CONDUIT_API_KEY}"
+      },
+      "models": {
+        "qwen3-coder": {
+          "name": "Qwen3 Coder"
+        },
+        "claude-sonnet-4.6": {
+          "name": "Claude Sonnet 4.6"
+        },
+        "gpt-5.6": {
+          "name": "GPT-5.6"
+        },
+        "gpt-5.6-sol": {
+          "name": "GPT-5.6 Sol"
+        },
+        "gpt-5": {
+          "name": "GPT-5"
+        },
+        "gpt-5-mini": {
+          "name": "GPT-5 Mini"
+        },
+        "kimi-k2.6": {
+          "name": "Kimi K2.6"
+        }
+      }
+    }
+  }
+}

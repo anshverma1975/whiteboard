@@ -1,0 +1,11 @@
+{
+  "name": "minimal-whiteboard",
+  "version": "1.0.0",
+  "description": "A minimal excalidraw-style whiteboard: pen, eraser, rectangle, circle and text, with configurable shortcuts and dark mode.",
+  "private": true,
+  "author": "Ansh Kumar Verma",
+  "license": "MIT",
+  "scripts": {
+    "start": "npx serve ."
+  }
+}
