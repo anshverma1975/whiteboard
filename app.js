@@ -159,8 +159,10 @@ function scheduleRedraw() {
 function redraw() {
   ctx.clearRect(0, 0, wrap.clientWidth, wrap.clientHeight);
   ctx.save();
-  ctx.translate(-camera.x, -camera.y);
+  // scale first, then translate => screen = (world - camera) * zoom
+  // this matches toWorld(): world = screen / zoom + camera
   ctx.scale(camera.z, camera.z);
+  ctx.translate(-camera.x, -camera.y);
   for (const el of elements) drawElement(el);
   if (draft) drawElement(draft);
   ctx.restore();
@@ -468,17 +470,20 @@ canvas.addEventListener('pointerleave', () => {
 });
 
 // ---------- text editor ----------
+// The editor is a DOM element living in screen pixels, so every world
+// coordinate must go through the same (world - camera) * zoom mapping
+// as the canvas transform.
 function syncEditorPosition() {
   const wx = parseFloat(editor.dataset.x) || 0;
   const wy = parseFloat(editor.dataset.y) || 0;
-  editor.style.left = Math.round(wx - camera.x) + 'px';
-  editor.style.top = Math.round(wy - camera.y) + 'px';
+  editor.style.fontSize = Math.round(fontSize * camera.z) + 'px';
+  editor.style.left = Math.round((wx - camera.x) * camera.z) + 'px';
+  editor.style.top = Math.round((wy - camera.y) * camera.z) + 'px';
 }
 
 function openEditor(p) { // p is in world coordinates
   editing = true;
   editor.style.display = 'block';
-  editor.style.fontSize = fontSize + 'px';
   editor.style.color = resolveColor(color);
   editor.dataset.x = String(p.x);
   editor.dataset.y = String(p.y);
@@ -489,8 +494,9 @@ function openEditor(p) { // p is in world coordinates
 }
 
 function resizeEditor() {
-  const left = (parseFloat(editor.dataset.x) || 0) - camera.x;
-  const m = textMetrics(editor.value || ' ', fontSize);
+  const fs = Math.round(fontSize * camera.z);
+  const left = ((parseFloat(editor.dataset.x) || 0) - camera.x) * camera.z;
+  const m = textMetrics(editor.value || ' ', fs);
   const maxW = Math.max(40, wrap.clientWidth - left - 8);
   editor.style.width = Math.min(Math.max(m.w + 8, 48), maxW) + 'px';
   editor.style.height = (Math.ceil(m.h) + 6) + 'px';
